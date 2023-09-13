@@ -1,0 +1,37 @@
+step1: create security key
+#aws ec2 create-key-pair --key-name mykey1
+--key-format pem > mykey1.pem
+
+step2: create (Firewall) security group
+#aws ec2 create-security-group --group-name group_name --description "description" --profile kabali
+
+#aws ec2 authorize-security-group-ingress --group-name group_name -- port 80 --cidr 0.0.0.0/0 --protocol tcp
+
+step3:
+#aws ec2 run-instances 
+--instance-type t2.micro 
+--key-name mykey1 --count 1 
+--image-id ami-0376ec8eacdf70aae 
+--profile kabali 
+--subnet-id subnet-0d99f7f4fc1b70b70 
+--security-group-ids sg-0b6c312c05ad079c7  
+--user-data file://lwtest.sh
+
+
+
+lwtest.sh
+
+#!/bin/bash
+
+yum install httpd -y
+
+echo welcome > /var/www/html/index.html
+
+systemctl enable httpd --now
+
+--profile mylw
+--subnet-id subnet-04209b35e835sdf
+--security-groups
+
+Tag
+Name=os100

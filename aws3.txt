@@ -1,0 +1,3 @@
+socks5 proxy: faster than vpn because it doesn't encrypt the tunnel path
+ssh ip -l user -i key -N -D 9090
+"C:\Users\Masterpiece6174\AppData\Local\Google\Chrome\Application\chrome.exe" --user-data-dir="C:\temp\proxy--profile" --proxy-server="socks5://localhost:9090"

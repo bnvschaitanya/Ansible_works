@@ -1,0 +1,38 @@
+- hosts: all  
+  tasks: 
+  - name: install the package
+    package: 
+     name: {{item}}
+     state: present
+    loop: 
+     - "httpd"
+     - "php"
+     - "git"
+     - "debug"
+    -notify: software install debug
+
+  - name: setup config file
+    template: 
+     src: "my.conf.j2"
+     dest: "/etc/httpd/conf.d/my.conf"
+    notify: "service httpd"
+
+  - name: deploy web page from local
+    copy: 
+     src: "index.php"
+     dest: "/var/www/html/index.php"
+
+  - name: Git pull code web page
+    git:
+     repo: "https://github.com/bnvschaitanya/ansible_training_2022.git"
+     dest: "/var/www/html/mygit"
+    ignore_errors: true 
+  handlers:
+  - name: service httpd
+    service: 
+     name: "httpd"
+     state: "started"
+     enabled: yes
+  - name: software install debug
+    debug:
+     msg: "i am debug , new software installed"

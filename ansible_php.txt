@@ -1,0 +1,55 @@
+setup for the web server:-
+-------------------------
+
+1)yum install httpd php -y
+
+2)vim /var/www/html/index.php
+<pre>
+<?php 
+print_r($_SERVER);
+?>
+</pre>
+3)systemctl start httpd
+
+setup for the load balancer:-
+--------------------------
+1)yum install haproxy -y
+
+2)vim /etc/haproxy/haproxy.cfg
+#vim local.cfg.j2
+frontend lb
+	bind *:8080
+	time client 10s
+	default_backend myweb
+backend myweb
+	balance roundrobin
+	timeout connect 10s
+	server app1 IPwebA:80
+	server app2 IPwebB:80
+
+## haproxy -f haproxy.cfg -c
+
+{% for ip in groups['web'] %}
+        server app{{loop.index}} {{ip}}:80
+{% endfor %}
+3)systemctl start haproxy
+
+web.yml
+- hosts: web
+  tasks:
+   - name: "Installing web server"
+     package:
+      name: "httpd"
+      state: present
+   - name: "Installing php package"
+     package:
+      name: "php"
+      state: present
+   - name: "Deploy web page"
+     copy:
+      src: "index.php"
+      dest: "/var/www/html/"
+   - name: "Start web service"
+     service:
+      name: "httpd"
+      state: started

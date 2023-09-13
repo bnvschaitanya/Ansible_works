@@ -1,0 +1,15 @@
+- hosts: localhost
+   tasks:
+    - vars:
+       src:"index1.html"
+    - name: installing httpd package
+      package:
+       name: "httpd"
+       state: present
+    - name: Deploying the web page
+      copy:
+       src: "{{src}}"
+       dest: "/var/www/html"
+    - name: starting the service
+       name: httpd
+       state: started

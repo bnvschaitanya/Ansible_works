@@ -1,0 +1,29 @@
+- hosts: web
+  vars:
+   - webpage: "a2.html"
+   - Docdir: "/var/www/html"
+   - packageName: "httpd"
+  tasks:
+   - name: installing modules
+     package:
+      name: "{{packageName}}"
+      state: present
+   - name: create doc root
+     file:
+      state: directory
+      path: "{{Docdir}}"
+   - name: setting configuration file
+     copy:
+      dest: "/etc/httpd/conf.d/my2.conf"
+      content: "documentroot {{Docdir}}\n"
+   - name: Deploying web pages
+     copy:
+      src: "{{webpage}}"
+      dest: "{{Docdir}}"
+   - name: Starting service
+     service:
+      name: "{{packageName}}"
+      state: reloaded
+   - name: printing statement
+     debug:
+       msg: "Finally {{webpage}} is deployed in {{Docdir}} and started {{packageName}} service"

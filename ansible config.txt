@@ -1,0 +1,37 @@
+sudo su
+-installing the packages
+yum install httpd -y
+
+deploying the web page
+vi /var/www/html/1.html
+
+start the services
+systemctl start httpd
+
+- hosts: web 
+  vars:
+   - webpage: "index.html"
+   - packageName: "httpd"
+   - directoryName: "/var/www/lw"
+  tasks:
+   - name: installing the packages
+     package:
+      name: "httpd"
+      state: present
+   - name: create a directory
+     file:
+      state: directory
+      path:"{{directoryName}}"
+   - name: configuring the directory
+     copy:
+      dest: "/etc/httpd/conf.d/myconf1.conf"
+      content: "documentroot {{directoryName}}\n"
+   - name: deploying the webpage
+     copy: 
+      src:"{{webpage}}"
+      dest:"{{directoryName}}"
+   - name: start the services
+     service:
+      name: "httpd"
+      state: reloaded
+      enabled: true

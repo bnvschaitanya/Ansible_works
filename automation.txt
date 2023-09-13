@@ -1,0 +1,17 @@
+- hosts: localhost
+  tasks: 
+  - amazon.aws.ec2_instance
+     name: "myinstance"
+     count: 1
+     image_id: "ami-0e07dcaca348a0e68"
+     instance_type: t2.micro
+     key_name: "putty_keys"
+     name: "kabali6174"
+     region: "ap-south-1"
+     state: present
+     vpc_subnet_id: "subnet-0274f7f3f22ba927e"
+     access_key: "AKIAVN4JKLR63QSYBPFL"
+     secret_key: "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"
+
+
+EylLz2d+Ycn3R3zvW4+6p5B+VRy58wxpPX1S1ThE

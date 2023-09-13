@@ -1,0 +1,7 @@
+<body bgcolor='aqua'>
+<pre>
+<?php
+print "welcome to vimal webserver for testing";
+print `ifconfig`;
+?>
+</pre>

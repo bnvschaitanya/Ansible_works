@@ -1,0 +1,55 @@
+#index.php
+<pre>
+<?php
+print_r($_SERVER);
+?>
+</pre>
+
+
+#lb.yml
+- hosts: lb
+  tasks:
+  - name: "Installing load balancer"
+    package:
+      name: "haproxy"
+      state: present
+  - name: "Registration web server to lb"
+    template:
+      src: "local.cfg.j2"
+      dest: "/etc/haproxy/haproxy.cfg"
+  - name: "Start the service"
+    service:
+     name: "haproxy"
+     state: restarted
+
+#local.cfg.j2
+frontend lb
+        bind *:8080
+        timeout client 10s
+        default_backend myweb
+backend myweb
+        balance roundrobin
+        timeout connect 10s
+{% for ip in groups['web'] %}
+        server app{{loop.index}} {{ip}}:80
+{% endfor %}
+
+#web.yml
+- hosts: web
+  tasks:
+   - name: "Installing web server"
+     package:
+      name: "httpd"
+      state: present
+   - name: "Installing php package"
+     package:
+      name: "php"
+      state: present
+   - name: "Deploy web page"
+     copy:
+      src: "index.php"
+      dest: "/var/www/html/"
+   - name: "Start web service"
+     service:
+      name: "httpd"
+      state: started
